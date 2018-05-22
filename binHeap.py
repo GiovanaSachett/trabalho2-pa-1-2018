@@ -30,7 +30,7 @@ class BinHeap:
       if i * 2 + 1 > self.currentSize:
           return i * 2
       else:
-          if self.heapList[i*2] < self.heapList[i*2+1]:
+          if self.heapList[i*2][2] < self.heapList[i*2+1][2]:
               return i * 2
           else:
               return i * 2 + 1
@@ -45,9 +45,9 @@ class BinHeap:
 
     def buildHeap(self,alist):
       # i = len(alist)
-      i = len(alist)
+      i = len(alist) // 2
       self.currentSize = len(alist)
       self.heapList = [0] + alist[:]
       while (i > 0):
-          self.percUp(i)
+          self.percDown(i)
           i = i - 1

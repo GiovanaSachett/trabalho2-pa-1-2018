@@ -1,9 +1,16 @@
-from binHeap import *
+import numpy as np
+import matplotlib.pyplot as plt
 from math import sqrt
+from binHeap import *
 from prim import *
+from kruskall import *
 
 def dist_euclidiana(x1, y1, x2, y2):
 	return( sqrt( (x1-x2)**2 + (y1 - y2)**2))
+
+def column(matrix, i):
+	return [row[i] for row in matrix]
+
 
 def main():
 	data = open("data.txt", 'r')
@@ -15,7 +22,10 @@ def main():
 	for i in range(len(vertices)):
 		vertices[i].insert(0, i)
 		vertices[i].append(int(classes.readline()))
-		
+	
+	# plt.scatter(column(vertices, 1), column(vertices, 2))
+	# plt.show()
+	
 	data.close()
 	classes.close()
 	#print(vertices)
@@ -31,21 +41,17 @@ def main():
 			arestas.append([i, j, dist_euclidiana(vertices[i][1], vertices[i][2], vertices[j][1], vertices[j][2])])
 	
 	vertices_indices = range(len(vertices))
-	bh = BinHeap()
-	bh.buildHeap(arestas[0:10])
-	print(sorted(arestas[0:10], key=lambda x: x[2]))
+	
 	#print(bh.heapList)
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	#prim(vertices_indices, arestas)
+	mst = kruskall(vertices_indices, arestas)
+
+	arvore = set()
+	for a in mst:
+		arvore.add(a[0])
+		arvore.add(a[1])
+		plt.plot([vertices[a[0]][1], vertices[a[0]][2]], 
+			[vertices[a[1]][1], vertices[a[1]][2]])
+	plt.show()
 
 if __name__ == '__main__':
-    main()
+	main()

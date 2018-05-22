@@ -47,8 +47,12 @@ def prim(vertices, arestas):
 	complementar = vertices[:]
 	S = list()
 	S.append(complementar.pop()) 
-	
 	bh = BinHeap()
+	bh.buildHeap(arestas)
+	print(bh.delMin())
+	print(bh.delMin())
+	print(bh.delMin())
+	print(bh.delMin())
 	while complementar: # enquanto tiver elementos no conjunto complementar
 		print("aaaaaaaa")
 		break
