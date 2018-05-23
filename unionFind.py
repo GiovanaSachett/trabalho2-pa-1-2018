@@ -5,7 +5,7 @@ class UnionFind:
 
 	def unionUF(self,i,j):
 		self.nSets -= 1
-		self.setsDict[i] = j
+		self.setsDict[self.findUF(i)] = self.setsDict[j]
 
 	def findUF(self,i):
 		if self.setsDict[i] == i:

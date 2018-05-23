@@ -13,29 +13,14 @@ def corte(S, complementar, arestas):
 	return c
 
 
-def atualiza_corte(corte_antigo, vertice_inserido, arestas, S, complementar):
-	remover = list()
+def atualiza_corte(corte, v_inserido, arestas, complementar):
 	
-	corte_novo = corte_antigo[:] #copia o corte antigo pro novo
-	# remove todas as arestas que continham o vertice que foi adicionado (sao arestas que tao com dois elementos do conjunto S, porque antes o vertice inserido era do complementar)
-	for i in corte_antigo: 
-		if i[0] == vertice_inserido or i[1] == vertice_inserido:
-			remover.append(i)
-	for i in remover:
-		corte_novo.remove(i)
-		
-	# adiciona as novas arestas que sao as que tem o que foiinserido e outro do complementar
-	#vou fazer essas duas linhas fora daqui porque isso eh do algoritmo e nao bem atualizar o corte
-	# S.append(vertice_inserido)
-	# complementar.remove(vertice_inserido)
 	for i in arestas: # adiciona as que entraram no corte (sao as que ligam o inserido ao complementar de S)
-		if (i[0] == vertice_inserido and i[1] in complementar) or (i[1] == vertice_inserido and i[0] in complementar):
-			corte_novo.append(i)
-	
-	return corte_novo
-	
-		
-def prim(vertices, arestas):
+		if (i[0] == v_inserido and i[1] in complementar) or (i[1] == v_inserido and i[0] in complementar):
+			corte.insert(i)
+
+
+def prim(vertices, arestas, k):
 	# como funciona o prim:
 	# escolhe um vertice inicial (pode ser aeatorio) para o conjunto S
 	# escolhe a aresta com menor peso do corte de S e passa o vertice que ela liga pra S
@@ -46,15 +31,36 @@ def prim(vertices, arestas):
 	#adiciona um vertice ao conjunto S
 	complementar = vertices[:]
 	S = list()
-	S.append(complementar.pop()) 
-	bh = BinHeap()
-	bh.buildHeap(arestas)
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	print(bh.delMin())
-	while complementar: # enquanto tiver elementos no conjunto complementar
-		print("aaaaaaaa")
-		break
+	S.append(complementar.pop())
 	
-	# print(bh.delMin())
+	# nesse heap binario eu soh vou colocar aresta que pelo menos um os vertices ta em S
+	# assim, eu sempre vou verificar se os dois nao tao em S
+	# mas eu nao preciso me preocupar com remover uma aresta com dois elementos
+	# no complementar que seriam valido em uma iteracao seguinte
+	 
+	bh = BinHeap()
+	bh.buildHeap(corte(S, complementar, arestas))
+	
+	while complementar: # enquanto tiver elementos no conjunto complementar
+		a = bh.delMin()
+		#se realmente for do corte 
+		if a[1] in S and a[0] in complementar:
+			mst.append(a)
+			S.append(a[0])
+			complementar.remove(a[0])
+			atualiza_corte(bh, a[0], arestas, complementar)
+
+		elif a[0] in S and a[1] in complementar:
+			mst.append(a)
+			S.append(a[1])
+			complementar.remove(a[1])
+			atualiza_corte(bh, a[1], arestas, complementar)
+	
+	mst = sorted(mst, key = lambda x : x[2])
+	
+	for i in range(k):
+		mst.pop()
+	
+	#print(mst)
+	
+	return mst
